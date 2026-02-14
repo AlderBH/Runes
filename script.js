@@ -186,15 +186,39 @@ function selectOutputSlot(index){ if(editingIndex!==null && output[editingIndex]
 /* -------------------------
    Commit / edit / assign decoder
 */
-function commitRune(){
-  const anySelected = Object.values(state).some(v=>v===true);
-  if(!anySelected && editingIndex===null) return;
-  const stored = { lineTL:!!state.lineTL, lineTR:!!state.lineTR, lineL:!!state.lineL, lineM:!!state.lineM, lineR:!!state.lineR, lineBL:!!state.lineBL, lineBR:!!state.lineBR, vowel:!!state.vowel };
-  if(editingIndex!==null){ replaceOutputItem(editingIndex,{type:'rune',state:stored}); if(output[editingIndex] && output[editingIndex].dom) output[editingIndex].dom.classList.remove('editing'); editingIndex=null; }
-  else appendOutputItem({type:'rune',state:stored});
-  clearCurrentSelection();
+function commitRune() {
+  const anySelected = Object.values(state).some(v => v === true);
+  if (!anySelected && editingIndex === null) return;
+
+  const stored = {
+    lineTL: !!state.lineTL,
+    lineTR: !!state.lineTR,
+    lineL:  !!state.lineL,
+    lineM:  !!state.lineM,
+    lineR:  !!state.lineR,
+    lineBL: !!state.lineBL,
+    lineBR: !!state.lineBR,
+    vowel:  !!state.vowel
+  };
+
+  if (editingIndex !== null) {
+    replaceOutputItem(editingIndex, { type: 'rune', state: stored });
+    if (output[editingIndex] && output[editingIndex].dom)
+      output[editingIndex].dom.classList.remove('editing');
+    editingIndex = null;
+  } else {
+    appendOutputItem({ type: 'rune', state: stored });
+  }
+
+  // *** FIX: fully reset input state immediately ***
+  for (const k in state) state[k] = false;
+  selectionOrder.length = 0;
+  selectedOutputIndex = null;
+  editingIndex = null;
+
   renderPreview();
 }
+
 function startEditing(index){ if(!output[index]) return; if(output[index].type!=='rune'){ selectOutputSlot(index); return; } const s = output[index].state; for(const k in state) state[k] = !!s[k]; selectionOrder.length=0; ['lineTL','lineTR','lineL','lineM','lineR','lineBL','lineBR'].forEach(n=>{ if(state[n]) selectionOrder.push(n); }); if(editingIndex!==null && output[editingIndex] && output[editingIndex].dom) output[editingIndex].dom.classList.remove('editing'); editingIndex=index; if(output[index].dom) output[index].dom.classList.add('editing'); if(selectedOutputIndex!==null && output[selectedOutputIndex] && output[selectedOutputIndex].dom) output[selectedOutputIndex].dom.classList.remove('selected'); selectedOutputIndex=null; renderPreview(); }
 function assignDecoderForIndex(index){ if(!output[index] || output[index].type!=='rune') return; const code = output[index].code || currentRuneCodeFromState(output[index].state); const current = decoder[code]; const currentText = current ? `${current.phoneme}|${current.example}` : ''; const input = prompt('Assign phoneme and example for this rune (format: PHONEME|example). Example: B|bug', currentText); if(!input) return; const parts = input.split('|').map(s=>s.trim()); if(parts.length===0 || parts[0]==='') return; const phoneme = parts[0]; const example = parts[1] || ''; decoder[code] = { phoneme, example }; try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(decoder)); }catch(e){} replaceOutputItem(index, { type:'rune', state: output[index].state }); }
 
@@ -456,3 +480,4 @@ modal.addEventListener('click', (e)=>{ if(e.target === modal) closeDecoderModal(
   renderPreview();
   updateStatus(Object.keys(decoder).length ? `Decoder loaded (${Object.keys(decoder).length} entries).` : 'No decoder mappings in storage.');
 })();
+

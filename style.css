@@ -1,0 +1,317 @@
+:root {
+  --bg: #f7f7fb;
+  --panel: #fff;
+  --ink: #111;
+  --muted: #666;
+  --light-line: #e9e9ea;
+  --accent: #2b8cff;
+  --modal-bg: rgba(0, 0, 0, 0.45);
+}
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--ink);
+}
+h3 {
+  margin: 0 0 10px 0;
+}
+.panel {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.canvas-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.canvas {
+  width: 280px;
+  min-height: 320px;
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-phoneme {
+  width: 280px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  text-align: center;
+  font-weight: 700;
+  color: var(--muted);
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.preview-phoneme .phoneme {
+  color: var(--ink);
+  font-size: 16px;
+}
+.preview-phoneme .example {
+  color: #666;
+  font-weight: 500;
+  font-size: 13px;
+}
+.output-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 320px;
+}
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.output {
+  flex: 1;
+  min-height: 320px;
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px;
+}
+.output.labels-hidden .label,
+.output.labels-hidden .example {
+  display: none !important;
+}
+.output .slot {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 60px;
+  height: 100px;
+  margin: 2px;
+  vertical-align: top;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  flex-direction: column;
+  padding-top: 6px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.output .slot svg {
+  width: 60px;
+  height: 86px;
+}
+.output .slot .label {
+  font-size: 14px;
+  color: #111;
+  line-height: 1;
+  text-align: center;
+  margin-top: 6px;
+  font-weight: 700;
+  width: 100%;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.output .slot .example {
+  font-size: 11px;
+  color: #666;
+  line-height: 1;
+  text-align: center;
+  margin-top: 2px;
+  width: 100%;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.output .slot .label.empty,
+.output .slot .example.empty {
+  color: transparent;
+}
+.output .slot.editing {
+  box-shadow: 0 0 0 3px rgba(43, 140, 255, 0.12) inset;
+  border-radius: 6px;
+}
+.output .slot.selected {
+  outline: 2px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+}
+.controls-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ctrl-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  user-select: none;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 36px;
+}
+.ctrl-btn .glyph {
+  font-size: 18px;
+  line-height: 1;
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+.small-note {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+.hint {
+  font-size: 13px;
+  color: #555;
+  margin-top: 8px;
+  max-width: 900px;
+}
+.kbd {
+  font-weight: 700;
+  font-size: 13px;
+  background: #fff0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.decoder-panel {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.status {
+  color: #666;
+  font-size: 13px;
+  margin-top: 6px;
+}
+.codeBox {
+  width: 420px;
+  height: 120px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: monospace;
+  resize: vertical;
+}
+svg path.clickable,
+svg circle.clickable {
+  cursor: pointer;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-bg);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+.modal {
+  background: var(--panel);
+  border-radius: 10px;
+  width: 880px;
+  max-width: 95%;
+  max-height: 86vh;
+  overflow: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  padding: 18px;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.modal-title {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink);
+}
+.modal-close {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.decoder-grid {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.decoder-column {
+  flex: 1;
+  min-width: 260px;
+}
+.decoder-column h4 {
+  margin: 6px 0 8px 0;
+  font-size: 15px;
+  color: var(--ink);
+}
+.decoder-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.decoder-item {
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 8px;
+  background: #fbfbfd;
+  border: 1px solid #f0f0f2;
+}
+.decoder-item svg {
+  width: 72px;
+  height: 96px;
+}
+.decoder-item .label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #111;
+  text-align: center;
+}
+.decoder-item .example {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}
+.empty-note {
+  color: #777;
+  font-size: 13px;
+  margin-top: 8px;
+}

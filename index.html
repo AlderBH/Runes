@@ -1,127 +1,32 @@
-<h3>Rune Decoder</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rune Decoder</title>
+  <!-- Link to your stylesheet (adjust path if your CSS is in a subfolder) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Page content starts here (kept from your original file) -->
+  <h3> Rune Decoder </h3>
 
-<div class="panel">
-  <div class="canvas-area">
-    <!-- Canvas area (rune input preview) -->
-    <div id="canvasArea" class="canvas" aria-label="Rune preview"></div>
-
-    <!-- Inline input decoder (hidden by default) — placed inside canvas-area so it exactly replaces canvas -->
-    <div id="inputDecoderInline" class="input-decoder" aria-hidden="true">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div>
-          <div id="inputDecoderTitle" style="font-weight:800;font-size:15px;color:var(--ink)">Input Decoder</div>
-          <div style="font-size:12px;color:#666;margin-top:6px;">Click a rune to insert it into the output. Toggle the button to return to the normal input.</div>
-        </div>
-      </div>
-
-      <div class="decoder-grid" id="inputDecoderContentInline">
-        <div class="decoder-column">
-          <h4>Consonants</h4>
-          <div id="inputConsonantListInline" class="decoder-list" tabindex="0"></div>
-          <div id="inputConsonantEmptyInline" class="empty-note" style="display:none;">No consonant mappings yet.</div>
-        </div>
-
-        <div class="decoder-column">
-          <h4>Vowels</h4>
-          <div id="inputVowelListInline" class="decoder-list" tabindex="0"></div>
-          <div id="inputVowelEmptyInline" class="empty-note" style="display:none;">No vowel mappings yet.</div>
-        </div>
-      </div>
+  <div class="panel">
+    <div class="canvas-area">
+      <!-- existing canvas / UI elements go here -->
     </div>
 
-    <!-- Preview / phoneme bar -->
-    <div id="previewPhoneme" class="preview-phoneme" aria-live="polite">
-      <span class="phoneme" id="previewPhonemeText">No mapping for current rune</span>
-      <span class="example" id="previewExampleText"></span>
+    <div class="controls">
+      <!-- existing controls, buttons, inputs go here -->
     </div>
   </div>
 
-  <div class="output-wrap">
-    <div class="output-header">
-      <div style="width:8px;"></div>
-    </div>
+  <!-- If your script builds or wires the UI, load it with defer so it runs after parsing -->
+  <script src="script.js" defer></script>
 
-    <div class="output" id="outputArea" aria-label="Typed runes"></div>
-
-    <div class="controls-row" aria-hidden="false">
-      <!-- Toggle button placed here so it remains accessible when inline panel is active -->
-      <button id="inputDecoderBtn" class="ctrl-btn" title="Toggle input decoder">Input with Decoder</button>
-
-      <button id="spaceBtn" class="ctrl-btn" title="Insert space"><span class="glyph">␣</span></button>
-      <button id="diamondEmptyBtn" class="ctrl-btn" title="Insert empty diamond"><span class="glyph">◇</span></button>
-      <button id="diamondFilledBtn" class="ctrl-btn" title="Insert filled diamond"><span class="glyph">◆</span></button>
-      <button id="diamondFilledDotBtn" class="ctrl-btn" title="Insert filled diamond with dot"><span class="glyph">◆•</span></button>
-      <button id="diamondEmptyDotBtn" class="ctrl-btn" title="Insert empty diamond with dot"><span class="glyph">◇•</span></button>
-
-      <button id="clearOutputBtn" class="ctrl-btn" title="Clear all output">Clear output</button>
-      <button id="deleteSelectedBtn" class="ctrl-btn" title="Delete selected output">Delete selected</button>
-
-      <button id="toggleOutputLabelsBtn" class="ctrl-btn" title="Show or hide phoneme and example in output">Hide labels</button>
-
-      <button id="exportImageBtn" class="ctrl-btn" title="Export output area as PNG">Export image</button>
-
-      <button id="viewDecoderBtn" class="ctrl-btn" title="View decoder mappings">View Decoder</button>
-    </div>
-
-    <div class="decoder-panel" aria-hidden="false">
-      <div style="flex:1">
-        <div style="font-weight:700; margin-bottom:6px;">Decoder export / import</div>
-        <div class="small" style="margin-bottom:6px;">
-          Generate code to export mappings; paste and Load code to import.
-        </div>
-
-        <textarea id="decoderCodeBox" class="codeBox" placeholder="Generated code will appear here."></textarea>
-
-        <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
-          <button id="generateCodeBtn" class="ctrl-btn">Generate code</button>
-          <button id="loadCodeBtn" class="ctrl-btn">Load code</button>
-          <button id="clearDecoderBtn" class="ctrl-btn">Clear decoder</button>
-          <div class="status" id="decoderStatus">Decoder loaded from storage (if present).</div>
-        </div>
-      </div>
-
-      <div style="min-width:180px;">
-        <div style="font-size:12px;color:#666;max-width:200px;">
-          Click once to select a slot; double-click to edit; triple-click to assign phoneme/example.
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Full decoder modal -->
-<div id="decoderModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal" role="document" aria-labelledby="decoderTitle">
-    <div class="modal-header">
-      <div>
-        <div id="decoderTitle" class="modal-title">Decoder — mapped symbols</div>
-        <div style="font-size:13px;color:#666;margin-top:6px;">Separated by consonants (no vowel circle) and vowels (with vowel circle)</div>
-      </div>
-      <div>
-        <button id="decoderCloseBtn" class="modal-close">Close</button>
-      </div>
-    </div>
-
-    <div id="decoderContent" class="decoder-grid" aria-live="polite">
-      <div class="decoder-column">
-        <h4>Consonants (no vowel circle)</h4>
-        <div id="consonantList" class="decoder-list"></div>
-        <div id="consonantEmpty" class="empty-note" style="display:none;">No consonant mappings yet.</div>
-      </div>
-
-      <div class="decoder-column">
-        <h4>Vowels (with vowel circle)</h4>
-        <div id="vowelList" class="decoder-list"></div>
-        <div id="vowelEmpty" class="empty-note" style="display:none;">No vowel mappings yet.</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="hint" style="margin-top:12px;">
-  - Press <span class="kbd">Enter</span> to commit a rune. <br>
-  - Use the punctuation buttons (␣ ◇ ◆ ◆• ◇•) to insert space/diamonds. <br>
-  - Select a slot and press <span class="kbd">Delete</span>, <span class="kbd">Backspace</span>, or <span class="kbd">-</span> to remove it. <br>
-  - Triple-click a committed rune to assign a phoneme and example (format: <code>PHONEME|example</code>).
-</div>
+  <!-- Helpful fallback if JavaScript is required for the UI -->
+  <noscript>
+    <p style="color:crimson">This site requires JavaScript to function correctly. Please enable JavaScript in your browser.</p>
+  </noscript>
+</body>
+</html>
